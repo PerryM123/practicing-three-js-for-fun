@@ -31,7 +31,7 @@ export default function Info() {
     return () => ws.close()
   }, [])
   return (
-    <div className="space-y-3 p-4">
+    <>
       <h1 className="text-xl font-semibold">Excavator Telemetry</h1>
       <p>Status: {status}</p>
       {!telemetry ? (
@@ -41,6 +41,6 @@ export default function Info() {
           {JSON.stringify(telemetry, null, 2)}
         </pre>
       )}
-    </div>
+    </>
   )
 }

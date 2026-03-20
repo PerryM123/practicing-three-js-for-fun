@@ -4,4 +4,5 @@ export default [
   index('routes/home.tsx'),
   route('playground', 'routes/playground.tsx'),
   route('info', 'routes/info.tsx'),
+  route('sandbox', 'routes/sandbox.tsx'),
 ] satisfies RouteConfig
