@@ -1,4 +1,4 @@
-import type { Route } from './+types/home'
+import type { Route } from './+types/sandbox'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useEffect, useRef } from 'react'

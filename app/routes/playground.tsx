@@ -1,4 +1,4 @@
-import type { Route } from './+types/home'
+import type { Route } from './+types/playground'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 // TODO: Setup aliases
@@ -22,7 +22,6 @@ const Box = ({ position }: { position: [x: number, y: number, z: number] }) => {
   const [active, setActive] = useState(false)
   // Subscribe this component to the render-loop, rotate the mesh every frame
   useFrame((state, delta) => {
-    console.log('perry: useFrame: ', { state, delta })
     if (!meshRef.current) {
       return
     }
