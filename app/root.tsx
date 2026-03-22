@@ -10,6 +10,8 @@ import {
 import type { Route } from './+types/root'
 import './app.css'
 import { CommonHeader } from './components/CommonHeader'
+import { Provider } from 'react-redux'
+import { store } from './store'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -44,12 +46,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <>
+    <Provider store={store}>
       <CommonHeader />
-      <div className="mt-[64px] space-y-3 p-4">
-        <Outlet />
+      <div className="mt-[64px] space-y-3">
+        <div className="p-4">
+          <Outlet />
+        </div>
       </div>
-    </>
+    </Provider>
   )
 }
 
@@ -70,7 +74,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
+    <main className="mx-auto p-4 pt-16">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
