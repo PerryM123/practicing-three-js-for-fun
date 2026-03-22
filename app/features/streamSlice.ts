@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+type StreamMessage = Record<string, unknown> | string | number | boolean | null
+type ConnectionStatus = 'connecting' | 'connected' | 'disconnected'
+
 const streamSlice = createSlice({
   name: 'stream',
   initialState: {
-    messages: [],
-    status: 'disconnected', // 'connecting' | 'connected' | 'disconnected'
-    error: null,
+    messages: [] as StreamMessage[],
+    status: 'disconnected' as ConnectionStatus,
+    error: null as string | null,
   },
   reducers: {
     // Triggered by the middleware when the socket opens
