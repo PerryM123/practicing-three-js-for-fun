@@ -4,6 +4,10 @@ import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
+const PLANE_MAX_SIZE = 10 as const
+const EDGE_LIMIT = PLANE_MAX_SIZE * 0.5
+let direction = 1
+
 export function meta({}: Route.MetaArgs) {
   return [
     { title: 'Perry Playground' },
@@ -41,7 +45,7 @@ function OrbitControlsImpl() {
   return null
 }
 
-function GroundPlane({ size = 20 }: { size?: number }) {
+function GroundPlane({ size = PLANE_MAX_SIZE }: { size?: number }) {
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
@@ -58,6 +62,25 @@ function GroundPlane({ size = 20 }: { size?: number }) {
   )
 }
 
+const BoxCharacter = () => {
+  const boxMeshRef = useRef<THREE.Mesh | null>(null)
+  console.log('perry: edge: ', Math.abs(EDGE_LIMIT))
+  useFrame((state, delta) => {
+    if (!boxMeshRef.current) {
+      return
+    }
+    boxMeshRef.current.position.x += delta * direction
+  })
+  return (
+    // TODO: castShadow is not working??
+    // TODO: I need to make sure the box does not exceed the ground plane
+    <mesh position={[0, 0.5, 0]} castShadow ref={boxMeshRef}>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color="orange" />
+    </mesh>
+  )
+}
+
 export default function Sandbox() {
   return (
     <div className="relative h-[70vh] w-full">
@@ -68,10 +91,11 @@ export default function Sandbox() {
           gl.setClearColor(new THREE.Color('#0b1220'), 1)
         }}
       >
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={5} />
         <directionalLight position={[6, 10, 8]} intensity={1} />
 
         <GroundPlane />
+        <BoxCharacter />
         <OrbitControlsImpl />
       </Canvas>
 
