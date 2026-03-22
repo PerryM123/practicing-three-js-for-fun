@@ -10,6 +10,7 @@ import {
 import type { Route } from './+types/root'
 import './app.css'
 import { CommonHeader } from './components/CommonHeader'
+import { TelemetryConnector } from './components/TelemetryConnector'
 import { Provider } from 'react-redux'
 import { store } from './store'
 
@@ -47,6 +48,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Provider store={store}>
+      <TelemetryConnector />
       <CommonHeader />
       <div className="mt-[64px] space-y-3">
         <div className="p-4">

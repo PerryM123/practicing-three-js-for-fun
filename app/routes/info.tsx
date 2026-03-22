@@ -1,35 +1,10 @@
-import { useEffect, useState } from 'react'
-type Telemetry = {
-  id: string
-  phase: string
-  position: { x: number; z: number }
-  bodyRotation: number
-  armAngle: number
-  bucketDepth: number
-  battery: number
-  alert: string | null
-}
-type ConnectionType = 'connecting' | 'connected' | 'disconnected' | 'error'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../store'
+
 export default function Info() {
-  const wsUrl = (import.meta.env.VITE_TELEMETRY_WEB_SOCKET_URL as string) || ''
-  const [telemetry, setTelemetry] = useState<Telemetry | null>(null)
-  const [status, setStatus] = useState<ConnectionType>('connecting')
-  useEffect(() => {
-    console.log('perry: useEffect')
-    const ws = new WebSocket(wsUrl)
-    ws.onopen = () => setStatus('connected')
-    ws.onmessage = (event) => {
-      try {
-        const data: Telemetry = JSON.parse(event.data)
-        setTelemetry(data)
-      } catch (e) {
-        console.error('Failed to parse telemetry:', e)
-      }
-    }
-    ws.onerror = () => setStatus('error')
-    ws.onclose = () => setStatus('disconnected')
-    return () => ws.close()
-  }, [])
+  const telemetry = useSelector((state: RootState) => state.stream.telemetry)
+  const status = useSelector((state: RootState) => state.stream.status)
+
   return (
     <>
       <h1 className="text-xl font-semibold">Excavator Telemetry</h1>
