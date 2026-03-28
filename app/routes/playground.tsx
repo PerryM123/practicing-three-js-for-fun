@@ -7,8 +7,8 @@ import { useRef, useState } from 'react'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Perry Playground' },
-    { name: 'description', content: 'Welcome to playground!' },
+    { title: 'Playground' },
+    { name: 'description', content: 'Welcome to Playground!' },
   ]
 }
 

@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { useExcavatorTelemetryQuery } from '~/features/excavatorApi'
 
 const PLANE_MAX_SIZE = 10 as const
 const EDGE_LIMIT = PLANE_MAX_SIZE * 0.5
@@ -10,8 +11,8 @@ let direction = 1
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Perry Playground' },
-    { name: 'description', content: 'Welcome to playground!' },
+    { title: 'Sandbox' },
+    { name: 'description', content: 'Welcome to Sandbox!' },
   ]
 }
 
@@ -82,6 +83,7 @@ const BoxCharacter = () => {
 }
 
 export default function Sandbox() {
+  const { data } = useExcavatorTelemetryQuery()
   return (
     <div className="relative h-[70vh] w-full">
       <Canvas

@@ -1,17 +1,19 @@
-import { useSelector } from 'react-redux'
-import type { RootState } from '../store'
+import { useExcavatorTelemetryQuery } from '../features/excavatorApi'
 import type { Route } from './+types/dashboard'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'New React Router App' },
-    { name: 'description', content: 'Welcome to React Router!' },
+    { title: 'Dashboard' },
+    { name: 'description', content: 'Welcome to Dashboard!' },
   ]
 }
 
 const ExcavatorInfo = () => {
-  const telemetry = useSelector((state: RootState) => state.stream.telemetry)
-  const status = useSelector((state: RootState) => state.stream.status)
+  console.log('perry: ExcavatorInfo: Before telemetry data')
+  const { data } = useExcavatorTelemetryQuery()
+  console.log('perry: ExcavatorInfo: After telemetry data: ', data)
+  const telemetry = data?.telemetry ?? null
+  const status = data?.connectionStatus ?? 'disconnected'
 
   if (!telemetry) {
     return (

@@ -1,14 +1,13 @@
 // TODO: Figure out the directory structure when using redux toolkit
 import { configureStore } from '@reduxjs/toolkit'
-import streamReducer from './features/streamSlice'
-import websocketMiddleware from './features/websocketMiddleware'
+import { excavatorApi } from './features/excavatorApi'
 
 export const store = configureStore({
   reducer: {
-    stream: streamReducer,
+    [excavatorApi.reducerPath]: excavatorApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(websocketMiddleware),
+    getDefaultMiddleware().concat(excavatorApi.middleware),
 })
 
 export type AppDispatch = typeof store.dispatch
