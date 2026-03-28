@@ -1,5 +1,3 @@
-import { useSelector } from 'react-redux'
-import { excavatorApi } from '../features/excavatorApi'
 import { useExcavatorTelemetryQuery } from '../features/excavatorApi'
 import type { Route } from './+types/info'
 
@@ -10,13 +8,10 @@ export function meta({}: Route.MetaArgs) {
   ]
 }
 
-const selectExcavatorTelemetry =
-  excavatorApi.endpoints.excavatorTelemetry.select(undefined)
-
 export default function Info() {
-  const telemetryState = useSelector(selectExcavatorTelemetry)
-  const telemetry = telemetryState.data?.telemetry ?? null
-  const status = telemetryState.data?.connectionStatus ?? 'disconnected'
+  const { data } = useExcavatorTelemetryQuery()
+  const telemetry = data?.telemetry ?? null
+  const status = data?.connectionStatus ?? 'disconnected'
 
   return (
     <>

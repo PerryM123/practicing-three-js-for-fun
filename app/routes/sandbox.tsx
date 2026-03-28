@@ -1,13 +1,15 @@
-import type { Route } from './+types/sandbox'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import * as THREE from 'three'
 import { useEffect, useRef } from 'react'
+import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { useExcavatorTelemetryQuery } from '~/features/excavatorApi'
+import {
+  useExcavatorTelemetryQuery,
+  type Telemetry,
+} from '~/features/excavatorApi'
+import { useNotifications } from '~/hooks/useNotifications'
+import type { Route } from './+types/sandbox'
 
 const PLANE_MAX_SIZE = 10 as const
-const EDGE_LIMIT = PLANE_MAX_SIZE * 0.5
-let direction = 1
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -64,7 +66,11 @@ function GroundPlane({ size = PLANE_MAX_SIZE }: { size?: number }) {
 }
 
 // TODO: Change any type to an actual type
-const BoxCharacter = ({ telemetry }: { telemetry: any }) => {
+const BoxCharacter = ({
+  telemetry,
+}: {
+  telemetry: Telemetry | null | undefined
+}) => {
   const boxMeshRef = useRef<THREE.Mesh | null>(null)
   useEffect(() => {
     if (boxMeshRef.current && telemetry?.position) {
@@ -82,6 +88,8 @@ const BoxCharacter = ({ telemetry }: { telemetry: any }) => {
 
 export default function Sandbox() {
   const { data } = useExcavatorTelemetryQuery()
+  const [notifications] = useNotifications()
+
   return (
     <div className="relative h-[70vh] w-full">
       <Canvas
@@ -101,6 +109,32 @@ export default function Sandbox() {
 
       <div className="pointer-events-none absolute top-3 left-3 rounded-md bg-black/30 px-2 py-1 text-xs text-white">
         Drag to rotate • Scroll to zoom
+      </div>
+      {data?.connectionStatus === 'connecting' && <WarningMessage />}
+      <NotificationSandbox notificationList={notifications} />
+    </div>
+  )
+}
+
+const NotificationSandbox = ({
+  notificationList,
+}: {
+  notificationList: string[]
+}) => {
+  return (
+    <div className="absolute top-2 right-2 text-white">
+      {notificationList.map((notificationItem, notificationIndex) => (
+        <div key={notificationIndex}>{notificationItem}</div>
+      ))}
+    </div>
+  )
+}
+
+const WarningMessage = () => {
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="absolute flex h-3/4 w-3/4 items-center justify-center bg-white opacity-80">
+        <p className="text-2xl">Connection Lost. Reconnecting...</p>
       </div>
     </div>
   )
