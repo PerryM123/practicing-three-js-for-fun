@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import {
@@ -56,7 +56,6 @@ function GroundPlane({ size = PLANE_MAX_SIZE }: { size?: number }) {
         <meshStandardMaterial color="#e5e7eb" roughness={1} metalness={0} />
       </mesh>
 
-      {/* In Three.js, GridHelper is drawn on the XZ plane (Y up). */}
       <gridHelper
         args={[size, size, '#6b7280', '#9ca3af']}
         position={[0, 0, 0]}
@@ -89,6 +88,20 @@ const BoxCharacter = ({
 export default function Sandbox() {
   const { data } = useExcavatorTelemetryQuery()
   const [notifications] = useNotifications()
+  const [warningMessage, setWarningMessage] = useState('')
+
+  useEffect(() => {
+    if (!data?.connectionStatus) {
+      return
+    }
+    if (data?.connectionStatus === 'connecting') {
+      setWarningMessage('Connecting. Please wait...')
+    } else if (data?.connectionStatus === 'reconnecting') {
+      setWarningMessage('Connection Lost. Reconnecting...')
+    } else {
+      setWarningMessage('')
+    }
+  }, [data?.connectionStatus])
 
   return (
     <div className="relative h-[70vh] w-full">
@@ -110,7 +123,8 @@ export default function Sandbox() {
       <div className="pointer-events-none absolute top-3 left-3 rounded-md bg-black/30 px-2 py-1 text-xs text-white">
         Drag to rotate • Scroll to zoom
       </div>
-      {data?.connectionStatus === 'connecting' && <WarningMessage />}
+      <p>warningMessage: {warningMessage}</p>
+      {warningMessage && <WarningMessage message={warningMessage} />}
       <NotificationSandbox notificationList={notifications} />
     </div>
   )
@@ -130,11 +144,11 @@ const NotificationSandbox = ({
   )
 }
 
-const WarningMessage = () => {
+const WarningMessage = ({ message }: { message: string }) => {
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="absolute flex h-3/4 w-3/4 items-center justify-center bg-white opacity-80">
-        <p className="text-2xl">Connection Lost. Reconnecting...</p>
+        <p className="text-2xl">{message}</p>
       </div>
     </div>
   )

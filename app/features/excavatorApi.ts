@@ -14,6 +14,7 @@ export type Telemetry = {
 export type ConnectionStatus =
   | 'connecting'
   | 'connected'
+  | 'reconnecting'
   | 'disconnected'
   | 'error'
 
@@ -67,6 +68,7 @@ export const excavatorApi = createApi({
         let reconnectTimer: ReturnType<typeof setTimeout> | null = null
         let reconnectAttempts = 0
         let released = false
+        let connectionMadeAtLeastOnce = false
         let ws: WebSocket | null = null
 
         const flushPending = () => {
@@ -94,6 +96,7 @@ export const excavatorApi = createApi({
           ws.onopen = () => {
             console.log('perry: onopen')
             reconnectAttempts = 0
+            connectionMadeAtLeastOnce = true
             updateCachedData((draft) => {
               draft.connectionStatus = 'connected'
               draft.error = null
@@ -155,7 +158,9 @@ export const excavatorApi = createApi({
             )
 
             updateCachedData((draft) => {
-              draft.connectionStatus = 'connecting'
+              draft.connectionStatus = connectionMadeAtLeastOnce
+                ? 'reconnecting'
+                : 'connecting'
             })
 
             reconnectTimer = setTimeout(connectWebSocket, delay)

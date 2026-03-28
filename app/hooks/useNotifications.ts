@@ -6,11 +6,6 @@ export const useNotifications = () => {
   const [notifications, setNotifications] = useState<string[]>([])
 
   useEffect(() => {
-    // if (data?.telemetry?.battery < 20) {
-    //   console.log('perry: battery 1')
-    // } else if (data?.telemetry?.battery < 50) {
-    //   console.log('perry: battery 2')
-    // }
     setNotifications((prev) => {
       if (!data?.telemetry?.battery) {
         return []
@@ -40,26 +35,6 @@ export const useNotifications = () => {
       return prev
     })
   }, [data?.telemetry?.battery])
-
-  // Connection status notifications
-  useEffect(() => {
-    setNotifications((prev) => {
-      if (data?.connectionStatus === 'connected') {
-        if (!prev.includes('Connected')) {
-          return [...prev, 'Connected']
-        }
-      } else if (data?.connectionStatus === 'disconnected') {
-        if (!prev.includes('Disconnected')) {
-          return [...prev, 'Disconnected']
-        }
-      } else if (data?.connectionStatus === 'error') {
-        if (!prev.includes('Connection Error')) {
-          return [...prev, 'Connection Error']
-        }
-      }
-      return prev
-    })
-  }, [data?.connectionStatus])
 
   // TODO: Should it be square brackets? Or curly?
   return [notifications]
