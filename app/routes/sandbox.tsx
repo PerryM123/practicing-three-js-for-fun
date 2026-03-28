@@ -120,9 +120,13 @@ export default function Sandbox() {
         <OrbitControlsImpl />
       </Canvas>
 
-      <div className="pointer-events-none absolute top-3 left-3 rounded-md bg-black/30 px-2 py-1 text-xs text-white">
+      <div className="pointer-events-none absolute top-3 left-3 rounded-md bg-green-700/30 px-2 py-1 text-xs text-white">
         Drag to rotate • Scroll to zoom
       </div>
+      <TelemetryInfo
+        telemetry={data?.telemetry ?? null}
+        status={data?.connectionStatus ?? 'disconnected'}
+      />
       <p>warningMessage: {warningMessage}</p>
       {warningMessage && <WarningMessage message={warningMessage} />}
       <NotificationSandbox notificationList={notifications} />
@@ -144,11 +148,33 @@ const NotificationSandbox = ({
   )
 }
 
+const TelemetryInfo = ({
+  telemetry,
+  status,
+}: {
+  telemetry: Telemetry | null
+  status: string
+}) => {
+  return (
+    <div className="pointer-events-none absolute bottom-3 left-3 w-2xl max-w-xs rounded-md bg-green-700/50 px-3 py-2 text-xs text-white">
+      <p className="font-semibold">Excavator Telemetry</p>
+      <p>Status: {status}</p>
+      {!telemetry ? (
+        <p className="text-white/60">Waiting for telemetry…</p>
+      ) : (
+        <pre className="mt-1 overflow-x-auto break-all whitespace-pre-wrap">
+          {JSON.stringify(telemetry, null, 2)}
+        </pre>
+      )}
+    </div>
+  )
+}
+
 const WarningMessage = ({ message }: { message: string }) => {
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="absolute flex h-3/4 w-3/4 items-center justify-center bg-white opacity-80">
-        <p className="text-2xl">{message}</p>
+        <p className="text-center text-2xl">{message}</p>
       </div>
     </div>
   )
