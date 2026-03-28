@@ -26,6 +26,7 @@ export type ExcavatorStreamState = {
 
 const WS_URL = import.meta.env.VITE_TELEMETRY_WEB_SOCKET_URL as string
 const THROTTLE_MS = 200
+const HEARTBEAT_TIMEOUT = 5000
 const INITIAL_RECONNECT_DELAY = 1000
 const MAX_RECONNECT_DELAY = 30000
 
@@ -66,6 +67,8 @@ export const excavatorApi = createApi({
         let pendingData: Telemetry | null = null
         let throttleTimer: ReturnType<typeof setTimeout> | null = null
         let reconnectTimer: ReturnType<typeof setTimeout> | null = null
+        let heartbeatTimer: ReturnType<typeof setInterval> | null = null
+        let lastMessageAt = Date.now()
         let reconnectAttempts = 0
         let released = false
         let connectionMadeAtLeastOnce = false
@@ -90,20 +93,32 @@ export const excavatorApi = createApi({
         }
 
         const connectWebSocket = () => {
-          console.log('perry: connectWebSocket1')
           ws = new WebSocket(WS_URL)
-          console.log('perry: connectWebSocket2')
+          const handleOffline = () => {
+            console.error('Network offline detected, closing connection')
+            ws?.close()
+          }
           ws.onopen = () => {
             console.log('perry: onopen')
             reconnectAttempts = 0
             connectionMadeAtLeastOnce = true
+            lastMessageAt = Date.now()
             updateCachedData((draft) => {
               draft.connectionStatus = 'connected'
               draft.error = null
             })
+            window.addEventListener('offline', handleOffline)
+            if (heartbeatTimer) clearInterval(heartbeatTimer)
+            heartbeatTimer = setInterval(() => {
+              if (Date.now() - lastMessageAt > HEARTBEAT_TIMEOUT) {
+                console.log('No heartbeat received, closing connection')
+                ws?.close()
+              }
+            }, HEARTBEAT_TIMEOUT)
           }
           ws.onmessage = (event) => {
             try {
+              lastMessageAt = Date.now()
               const data = JSON.parse(event.data) as unknown
               if (!isTelemetry(data)) return
               const now = Date.now()
@@ -141,17 +156,16 @@ export const excavatorApi = createApi({
             })
           }
           ws.onclose = () => {
-            console.log('perry: onclose')
+            window.removeEventListener('offline', handleOffline)
             updateCachedData((draft) => {
               draft.connectionStatus = 'disconnected'
               draft.error = null
             })
-
             if (throttleTimer) clearTimeout(throttleTimer)
+            if (heartbeatTimer) clearInterval(heartbeatTimer)
             if (released) return
-
-            // Attempt to reconnect
             reconnectAttempts++
+            // TODO: Might be better to change this to attempt reconnects every 2 seconds
             const delay = getReconnectDelay(reconnectAttempts - 1)
             console.log(
               `perry: reconnect attempt ${reconnectAttempts} in ${delay}ms`
@@ -173,7 +187,8 @@ export const excavatorApi = createApi({
         released = true
         if (throttleTimer) clearTimeout(throttleTimer)
         if (reconnectTimer) clearTimeout(reconnectTimer)
-        // TODO: I need to double check this
+        if (heartbeatTimer) clearInterval(heartbeatTimer)
+        // TODO: I need to double check this since the type is becoming the never type
         ws?.close()
       },
     }),
