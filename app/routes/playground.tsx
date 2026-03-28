@@ -1,9 +1,9 @@
-import type { Route } from './+types/playground'
 import { Canvas, useFrame } from '@react-three/fiber'
+import { useRef, useState } from 'react'
 import * as THREE from 'three'
+import type { Route } from './+types/playground'
 // TODO: Setup aliases
 import './../../app/three-fiber-style.css'
-import { useRef, useState } from 'react'
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,14 +13,9 @@ export function meta({}: Route.MetaArgs) {
 }
 
 const Box = ({ position }: { position: [x: number, y: number, z: number] }) => {
-  console.log('perry: Box component')
-  // This reference will give us direct access to the mesh
   const meshRef = useRef<THREE.Mesh | null>(null)
-  console.log('perry: meshRef: ', meshRef)
-  // Set up state for the hovered and active state
   const [hovered, setHover] = useState(false)
   const [active, setActive] = useState(false)
-  // Subscribe this component to the render-loop, rotate the mesh every frame
   useFrame((state, delta) => {
     if (!meshRef.current) {
       return

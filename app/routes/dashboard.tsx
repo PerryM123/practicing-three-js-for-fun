@@ -9,9 +9,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 const ExcavatorInfo = () => {
-  console.log('perry: ExcavatorInfo: Before telemetry data')
   const { data } = useExcavatorTelemetryQuery()
-  console.log('perry: ExcavatorInfo: After telemetry data: ', data)
   const telemetry = data?.telemetry ?? null
   const status = data?.connectionStatus ?? 'disconnected'
 
