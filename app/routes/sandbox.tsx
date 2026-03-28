@@ -63,21 +63,19 @@ function GroundPlane({ size = PLANE_MAX_SIZE }: { size?: number }) {
   )
 }
 
-const BoxCharacter = () => {
+// TODO: Change any type to an actual type
+const BoxCharacter = ({ telemetry }: { telemetry: any }) => {
   const boxMeshRef = useRef<THREE.Mesh | null>(null)
-  console.log('perry: edge: ', Math.abs(EDGE_LIMIT))
-  useFrame((state, delta) => {
-    if (!boxMeshRef.current) {
-      return
+  useEffect(() => {
+    if (boxMeshRef.current && telemetry?.position) {
+      boxMeshRef.current.position.x = telemetry.position.x
+      boxMeshRef.current.position.z = telemetry.position.z
     }
-    boxMeshRef.current.position.x += delta * direction
-  })
+  }, [telemetry?.position.x, telemetry?.position.z])
   return (
-    // TODO: castShadow is not working??
-    // TODO: I need to make sure the box does not exceed the ground plane
     <mesh position={[0, 0.5, 0]} castShadow ref={boxMeshRef}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="orange" />
+      <meshStandardMaterial color="yellow" />
     </mesh>
   )
 }
@@ -97,7 +95,7 @@ export default function Sandbox() {
         <directionalLight position={[6, 10, 8]} intensity={1} />
 
         <GroundPlane />
-        <BoxCharacter />
+        <BoxCharacter telemetry={data?.telemetry} />
         <OrbitControlsImpl />
       </Canvas>
 
