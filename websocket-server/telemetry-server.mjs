@@ -1,10 +1,11 @@
 import { WebSocketServer } from "ws";
 
 const PORT = 8080;
-const LERP_FACTOR = 0.05;
+const LERP_FACTOR = 0.2;
 const TICK_MS = 100;
 const PHASE_DURATION_MS = 3000;
 
+// TODO: Add more in the future
 const EXCAVATOR_ID = "excavator-01";
 
 const PHASES = [
@@ -135,8 +136,8 @@ setInterval(() => {
   }
 
   // Position drift wobble around the work area.
-  const wobbleX = 0.02 * Math.sin(nowMs / 1000 * 0.5 + wobbleSeedX + phaseIndex * 0.37);
-  const wobbleZ = 0.02 * Math.cos(nowMs / 1000 * 0.5 + wobbleSeedZ + phaseIndex * 0.41);
+  const wobbleX = 5 * Math.sin(nowMs / 1000 * 0.5 + wobbleSeedX + phaseIndex * 0.37);
+  const wobbleZ = 5 * Math.cos(nowMs / 1000 * 0.5 + wobbleSeedZ + phaseIndex * 0.41);
   const targetX = areaOffsetX + wobbleX;
   const targetZ = areaOffsetZ + wobbleZ;
 
