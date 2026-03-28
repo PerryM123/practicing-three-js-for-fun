@@ -4,6 +4,10 @@
   "editor.quickSuggestions": {
     "strings": true
   },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always",
+    "source.addMissingImports": "always"
+  },
   "[typescript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
