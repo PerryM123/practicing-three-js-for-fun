@@ -10,7 +10,6 @@ export const useNotifications = () => {
       if (!data?.telemetry?.battery) {
         return []
       }
-      // Avoid duplicate notifications
       if (data?.telemetry?.battery < 20) {
         if (!prev.includes('Battery is below 20%')) {
           return [...prev, 'Battery is below 20%']
