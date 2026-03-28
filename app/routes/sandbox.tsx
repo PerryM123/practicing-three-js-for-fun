@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import {
@@ -64,7 +64,6 @@ function GroundPlane({ size = PLANE_MAX_SIZE }: { size?: number }) {
   )
 }
 
-// TODO: Change any type to an actual type
 const BoxCharacter = ({
   telemetry,
 }: {
@@ -88,20 +87,12 @@ const BoxCharacter = ({
 export default function Sandbox() {
   const { data } = useExcavatorTelemetryQuery()
   const [notifications] = useNotifications()
-  const [warningMessage, setWarningMessage] = useState('')
-
-  useEffect(() => {
-    if (!data?.connectionStatus) {
-      return
-    }
-    if (data?.connectionStatus === 'connecting') {
-      setWarningMessage('Connecting. Please wait...')
-    } else if (data?.connectionStatus === 'reconnecting') {
-      setWarningMessage('Connection Lost. Reconnecting...')
-    } else {
-      setWarningMessage('')
-    }
-  }, [data?.connectionStatus])
+  const warningMessage =
+    data?.connectionStatus === 'connecting'
+      ? 'Connecting. Please wait...'
+      : data?.connectionStatus === 'reconnecting'
+        ? 'Connection Lost. Reconnecting...'
+        : ''
 
   return (
     <div className="relative h-[70vh] w-full">
