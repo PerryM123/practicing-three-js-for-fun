@@ -12,6 +12,7 @@
     "fmt:check": "oxfmt --check"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.13.4",
     "@react-router/node": "7.13.1",
     "@react-router/serve": "7.13.1",
     "@react-three/fiber": "^9.5.0",
