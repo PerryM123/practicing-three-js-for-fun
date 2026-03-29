@@ -11,8 +11,7 @@ export type LoginRequest = {
 }
 
 export type LoginResponse = {
-  token: string
-  token_type: 'Bearer'
+  message: string
 }
 
 export type LogoutResponse = {
@@ -25,13 +24,7 @@ export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('auth_token')
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
+    credentials: 'include',
   }),
   endpoints: (build) => ({
     login: build.mutation<LoginResponse, LoginRequest>({
