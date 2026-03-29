@@ -9,7 +9,6 @@ import {
 
 import type { Route } from './+types/root'
 import './app.css'
-import { CommonHeader } from './components/CommonHeader'
 import { Provider } from 'react-redux'
 import { store } from './store'
 
@@ -47,12 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Provider store={store}>
-      <CommonHeader />
-      <div className="mt-[64px] space-y-3">
-        <div className="p-4">
-          <Outlet />
-        </div>
-      </div>
+      <Outlet />
     </Provider>
   )
 }
