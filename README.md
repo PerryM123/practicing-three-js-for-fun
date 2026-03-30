@@ -1,6 +1,12 @@
-# Pet Project to Prep for RTL and Three.js
+# Practice Project 
 
-## Command
+I'm using this project to prep my Redux Toolkit and Three.js knowledge using dummy telemetry data coming through web sockets
+
+## Image
+
+![alt text](./docs/images/image.gif)
+
+## Commands
 
 ```sh
 ## frontend
