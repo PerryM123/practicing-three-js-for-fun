@@ -1,6 +1,6 @@
 import { WebSocketServer } from 'ws'
 
-const PORT = 8080
+const PORT = 8081
 const LERP_FACTOR = 0.2
 const TICK_MS = 100
 const PHASE_DURATION_MS = 3000
