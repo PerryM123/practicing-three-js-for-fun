@@ -1,4 +1,4 @@
-# Pet Project to Prep for DeepX Coding Interview
+# Pet Project to Prep for RTL and Three.js
 
 ## Command
 
