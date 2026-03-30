@@ -11,6 +11,7 @@ import type { Route } from './+types/root'
 import './app.css'
 import { Provider } from 'react-redux'
 import { store } from './store'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -45,9 +46,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <Outlet />
-    </Provider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <Outlet />
+      </Provider>
+    </GoogleOAuthProvider>
   )
 }
 
